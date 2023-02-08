@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: k8s-env-apps
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/amar-chand/test
+    targetRevision: HEAD
+    path: argocd/argo-manifests/(test,prod).yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
