@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: demo-application-sets
+spec:
+  generators:
+    - list:
+        elements:
+        - cluster: <cluster-name-here>
+          url: <cluster-url-here>
+  template:
+    metadata:
+      name: '{{cluster}}-demo-application'
+    spec:
+      destination:
+        server: '{{url}}'
+        namespace: default
+      project: default
+      source:
+        repoURL: https://github.com/shehbaz-pathan/simple-microservices-app.git
+        path: manifests
+        targetRevision: HEAD
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+
+
