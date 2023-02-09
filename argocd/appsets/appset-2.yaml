@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: demo-application-sets
+spec:
+  generators:
+    - matrix:
+        generators:
+          - git:
+              repoURL: https://github.com/ppratheesh/simple-microservices-app.git
+              revision: HEAD
+              directories:
+                - path: custom-app/ApplicationSet/*
+                - path: custom-app/ApplicationSet/sample-app-three
+                  exclude: true
+          - clusters: {}
+  template:
+    metadata:
+      name: '{{path.basename}}-{{name}}'
+    spec:
+      destination:
+        server: '{{server}}'
+        namespace: '{{path.basename}}'
+      project: default
+      source:
+        repoURL: https://github.com/ppratheesh/simple-microservices-app.git
+        path: '{{path}}'
+        targetRevision: HEAD
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+
+
